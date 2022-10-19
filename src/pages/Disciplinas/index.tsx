@@ -9,11 +9,17 @@ export function Disciplinas() {
   const [series, setSeries] = useState([]);
 
   useEffect(() => {
-    app.get(`/escolas/users/professores/${user}/series`).then((response) => {
-      console.log(response.data.series);
-      setSeries(response.data.series);
-    });
-  }, []);
+    if(user){
+     try {
+      app.get(`/escolas/users/professores/${user}/series`).then((response) => {
+        console.log(response.data.series);
+        setSeries(response.data.series);
+      });
+     } catch (error) {
+      console.log("Error: ", error)
+     }
+    }
+  }, [user]);
 
   return (
     <div className="flex w-full min-h-screen font-sans bg-dark-theme">
@@ -38,22 +44,22 @@ export function Disciplinas() {
 
                       <div>
                         <div className="grid grid-cols-3 ml-12 ">
-                          {serie.disciplinas.map((Disciplina) => {
+                          {serie.disciplinas.map((dis) => {
                             return (
                               <div
-                                key={Disciplina.id}
+                                key={dis.id}
                                 className="flex justify-center mr-1 mt-4 items-center scale-100 ease-in duration-200 hover:scale-110"
                               >
                                 <a
-                                  href={`/criar-disciplinas/${Disciplina.id}`}
+                                  href={`/view-disciplinas/${dis.id_serie}/${dis.id}`}
                                 >
                                   <img
-                                    src={Disciplina.bk_img}
-                                    alt={Disciplina.name}
+                                    src={dis.bk_img}
+                                    alt={dis.name}
                                     className="w-64 h-36 rounded-lg"
                                   />
                                   <p className="flex items-center mt-[-4px] justify-center text-dark-purple text-[18px] font-rubik">
-                                    {Disciplina.name}
+                                    {dis.name}
                                   </p>
                                 </a>
                               </div>

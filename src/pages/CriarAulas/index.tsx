@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { IoMdPerson, IoMdExit } from "react-icons/io";
-import { MdOutlineNotifications } from "react-icons/md";
-import logo from "../../assets/logo.png";
 import { app } from "../../api/app";
 import { useParams } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -10,14 +7,67 @@ import MenuIcon from "@mui/icons-material/Menu";
 import EyesCloked from "../../assets/hidden.png";
 import EyesOpen from "../../assets/view.png";
 import { ItemNewEdit } from "../../components/ItemDrop";
+import { SuperTabs } from "../../components/SuperTabs";
+import { Navbar } from "../../components/Navbar";
+import { AuthContext } from "../../context/auth";
+import { RenderConteudos } from "../../components/RenderConteudos";
 
-export function EditAula() {
+type Disciplina = {
+  id: string;
+  name: string;
+};
+
+export function CriarAula() {
+  const { user } = useContext(AuthContext);
+  const { id } = useParams();
   const [aula, setAula] = useState([]);
+  const [bimestre, setBimestre] = useState([]);
+  const [bimestreId, setBimestreId] = useState(null);
   const [ready, setReady] = useState(true);
   const [text, setText] = useState("");
+
   const [ clicked, setClicked ] = useState(true)
   const [ clicked2, setClicked2 ] = useState(true)
-  
+
+  const [disc, setDisc] = useState<Disciplina>();
+  const [label, setLabel] = useState(0)
+
+  const handleBimestre = (event) => {
+    const getCondensaId = event.target.value;
+    console.log(getCondensaId);
+    setBimestreId(getCondensaId);
+  };
+
+  useEffect(()=> {
+    if(id) {
+      try {
+        const getData = async () => {
+          const response = await app.get(`/bimestres/`);
+          setBimestre(response.data["bimestres"])
+          console.log(response.data)
+       };
+       getData();
+      } catch (error) {
+        console.log("Error: ", error)
+      }
+    }
+  },[])
+
+  useEffect(() => {
+    if(id){
+      try {
+        const getData = async () => {
+          const response = await app.get(`/disciplinas/${id}`);
+          setDisc(response.data.disciplina.name)
+          console.log(response.data.disciplina.name)
+       };
+       getData();
+     } catch (error) {
+       console.log("Error: ", error)
+     }
+    }
+   }, [id]);
+
   useEffect(() => {
     const getData = async () => {
       const response = await app.get(
@@ -42,24 +92,9 @@ export function EditAula() {
     }
   }, []);
 
-  async function AddAula() {
-    try {
-      await app.post("/conteudos", {
-        name: text,
-        id_disciplina: "0edbbd06-e902-4714-a18e-ddd4dc82ddeb",
-        created_by: "a8b56ba5-8dbb-4d51-ba74-e0c4f717081f",
-        array_aulas: lista,
-        array_atividades: [],        
-      });
-      document.location.reload()
-      alert("Conteudo cadastrado!");
-    } catch {
-      alert("Ocorreu um erro. Tente novamente.");
-    }
-  }
-
+  
   const lista = [];
-
+  console.log(lista)
   function handleInput(id: number) {
     lista.push(id);
   }
@@ -68,7 +103,25 @@ export function EditAula() {
     lista.pop(id);
   }
 
-  const onDragEnd = (re) => {
+  async function AddAula() {
+    try {
+      await app.post("/conteudos", {
+        name: text,
+        id_disciplina: id,
+        created_by: user,
+        array_aulas: lista,
+        array_atividades: [],
+        id_bimestre: "1cc1aee8-7cf6-48f1-9f9d-24434704ba9b",
+        status: true      
+      });
+      document.location.reload()
+      alert("Conteudo cadastrado!");
+    } catch (error) {
+      console.warn("error: ", error)
+    }
+  }
+  
+  const onDragEnd = (re:any) => {
     if (!re.destination) return;
     let newBoardData = aula;
     var dragItem =
@@ -84,7 +137,10 @@ export function EditAula() {
     );
 
     if (re.source.droppableId == 0 && re.destination.droppableId == 1) {
+      //console.log(dragItem.id)
+      //lista.push(dragItem.id);
       handleInput(dragItem.id);
+  console.log(lista)
     } else if (re.source.droppableId == 1 && re.destination.droppableId == 0) {
       handleInput2(dragItem.id);
     } else {
@@ -92,32 +148,9 @@ export function EditAula() {
   };
 
   return (
-    <div className="flex w-full h-full font-sans bg-dark-theme ">
+    <div className="flex w-full h-full font-sans bg-dark-theme duration-500">
       <main className="text-2xl font-semibold flex-1 bg-dark-theme gap-6 ">
-        <div className="w-full h-16 bg-dark-purple relative">
-          <div className="p-4">
-            <a href="/home">
-              <img
-                src={logo}
-                alt="logo maisEducaÃ§ÃĢo"
-                className={`cursor-pointer duration-500 w-40`}
-              />
-            </a>
-          </div>
-          <div className="absolute top-5 right-5 text-white ">
-            <ul className="flex">
-              <li className="pr-2">
-                <IoMdPerson />
-              </li>
-              <li className="pr-2">
-                <MdOutlineNotifications />
-              </li>
-              <li className="pr-2">
-                <IoMdExit />
-              </li>
-            </ul>
-          </div>
-        </div>
+      <Navbar />
         <div className="w-full flex flex-row justify-between">
           <div className="flex flex-row">
             {ready && (
@@ -152,7 +185,7 @@ export function EditAula() {
                                 {board.name === "aulas_conteudo" ? (
                                   <div className="w-full relative">
                                     <div>
-                                      {/* <ComponentMiniHeader /> */}
+                                      <SuperTabs nameDisciplina={disc} idRefs={id} label={label.toString()}/>
                                       <div className="w-[180px] flex justify-between items-center flex-row absolute top-5 right-5">
                                         <button className="py-[2px] px-[15px] text-[14px] bg-[#FFFFFF] rounded-md">
                                           Cancelar
@@ -175,6 +208,18 @@ export function EditAula() {
                                             setText(e.target.value)
                                           }
                                         />
+                                       <div className=" rounded-sm border-solid border-4 border-sky-300 w-[200px] mb-5 flex justify-center text-zinc-700">
+                                       <select name="" id="" className="text-[14px] w-[200px]"  onChange={(e) => handleBimestre(e)}>
+                                          <option className="text-[12px]">Selecione o Bimestre</option>
+                                          {
+                                            bimestre.map((bim)=> {
+                                              return (
+                                                <option key={bim.id} value="">{bim.number}</option>
+                                              );
+                                            })
+                                          }
+                                        </select>
+                                       </div>
                                         {
                                           clicked2 ?
                                         <button className="w-[25px] h-[25px]" onClick={switchEyesGlobal}>
@@ -195,9 +240,9 @@ export function EditAula() {
 
                                       {board.name == "aulas_conteudo"
                                         ? board.items.length > 0 &&
-                                          board.items.map((item, iIndex) => {
+                                          board.items.map((item:any, iIndex:any) => {
                                             return (
-                                              <div className="bg-[#EDF2FF] rounded-lg p-4">
+                                              <div key={iIndex} className="bg-[#EDF2FF] rounded-lg p-4">
                                                 <div className="flex flex-row items-center">
                                                   <div className="w-1/3 flex items-center">
                                                     <MenuIcon className="text-[#4263EB] active:text-[#263B4A] opacity-1 mb-8 mr-1" />
@@ -231,9 +276,9 @@ export function EditAula() {
 
                               {board.name == "aulas"
                                 ? board.items.length > 0 &&
-                                  board.items.map((item, iIndex) => {
+                                  board.items.map((item:any, iIndex:any) => {
                                     return (
-                                      <div className="flex flex-row items-center">
+                                      <div className="flex flex-row items-center" key={iIndex}>
                                         <MenuIcon className="text-[#FFFFFF] active:text-[#263B4A] opacity-1 mb-8 mr-1" />
                                         <ItemNewEdit
                                           key={item.id}
@@ -257,6 +302,7 @@ export function EditAula() {
             )}
           </div>
           {/* Aqui vai a lateral onde tem as aulas criadas pelo professor */}
+          <RenderConteudos/>
         </div>
       </main>
     </div>

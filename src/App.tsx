@@ -4,8 +4,10 @@ import { Home } from "./pages/Home";
 import { AuthProvider } from "./context/auth";
 import { Private } from "./components/Private";
 import { Disciplinas } from "./pages/Disciplinas";
-import { CreateDisciplinas } from "./pages/CreateDisciplinas";
-import { EditAula } from "./pages/EditarAula";
+import { OverviewDisciplinas } from "./pages/OverviewDisciplina";
+import { CriarAula } from "./pages/CriarAulas";
+import { CriarAtividades } from "./pages/CriarAtividades";
+import { Dados } from "./pages/Dados";
 
 function App() {
   return (
@@ -30,10 +32,10 @@ function App() {
             }
           />
            <Route
-            path="/criar-disciplinas/:id"
+            path="/view-disciplinas/:idSerie/:idDisciplina"
             element={
               <Private>
-                <CreateDisciplinas />
+                <OverviewDisciplinas />
               </Private>
             }
           />
@@ -41,7 +43,23 @@ function App() {
             path="/criar-disciplinas-Aulas/:id"
             element={
               <Private>
-                <EditAula />
+                <CriarAula />
+              </Private>
+            }
+          />
+           <Route
+            path="/criar-disciplinas-Atividades/:id"
+            element={
+              <Private>
+                <CriarAtividades />
+              </Private>
+            }
+          />
+           <Route
+            path="/dados"
+            element={
+              <Private>
+                <Dados />
               </Private>
             }
           />

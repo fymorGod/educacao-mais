@@ -13,13 +13,19 @@ export function PerfilData() {
   const [CPFProf, setCPFProf] = useState("");
 
   useEffect(() => {
-    app.get(`/escolas/users/professores/${user}`).then((response) => {
-      setNameProf(response.data.professor.escola_user.name);
-      setMatProf(response.data.professor.escola_user.mat);
-      setEmail(response.data.professor.escola_user.email);
-      setCPFProf(response.data.professor.escola_user.cpf);
-    });
-  });
+    if(user){
+     try {
+      app.get(`/escolas/users/professores/${user}`).then((response) => {
+        setNameProf(response.data.professor.escola_user.name);
+        setMatProf(response.data.professor.escola_user.mat);
+        setEmail(response.data.professor.escola_user.email);
+        setCPFProf(response.data.professor.escola_user.cpf);
+      });
+     } catch (error) {
+      console.log("Error: ", error)
+     }
+    }
+  }, [user]);
 
   return (
     <div className=" w-full px-5">

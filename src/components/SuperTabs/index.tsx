@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { app } from "../../api/app";
 
 type TabsProps = {
-    nameHook?: string;
-    setNameHook: (value: string) => void;
     nameDisciplina: string;
+    idRefs:string;
+    label: string;
 }
 type Disciplinas = {
     id: string;
     name: string;
 }
-export function TabsDisciplinas({setNameHook, nameDisciplina}: TabsProps) {
-  const { idDisciplina } = useParams();
+
+export function SuperTabs({ nameDisciplina, idRefs, label}: TabsProps) {
   const [disc, setDisc] = useState<Disciplinas>();
-  const [clicked, setClicked] = useState(0);
+  const [clicked, setClicked] = useState(label);
+  const navigate = useNavigate();
 
-  const handleClicked = (id: number, name: string) => {
+  const handleClicked = (id: string, label: string) => {
     setClicked(id);
-    setNameHook(name);
-    // navigate(`/editar-disciplinas-${nameHook}/${rotaId}`);
+    navigate(`/criar-disciplinas-${label}/${idRefs}`);
   };
-
   const tabs = [
     { id: 1, label: "Aulas" },
     { id: 2, label: "Atividades" },
@@ -30,7 +29,7 @@ export function TabsDisciplinas({setNameHook, nameDisciplina}: TabsProps) {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await app.get(`/disciplinas/${idDisciplina}`);
+      const response = await app.get(`/disciplinas/${idRefs}`);
       setDisc(response.data.disciplina);
     };
     getData();
@@ -45,9 +44,9 @@ export function TabsDisciplinas({setNameHook, nameDisciplina}: TabsProps) {
             return (
               <div key={index}>
                 <button
-                  onClick={() => handleClicked(index, item.label)}
+                  onClick={() => handleClicked(index.toString(), item.label)}
                   className={`rounded-t-lg px-8 hover:bg-[#FFFFFF] ${[
-                    index === clicked ? "bg-[#FFFFFF]" : "bg-[#BAC8FD] ",
+                    index == parseInt(clicked) ? "bg-[#FFFFFF]" : "bg-[#BAC8FD] ",
                   ]}`}
                 >
                   <p className="text-[#4263EB]">{item.label}</p>

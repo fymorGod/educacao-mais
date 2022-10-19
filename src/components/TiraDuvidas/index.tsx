@@ -36,7 +36,7 @@ export function TiraDuvidas(){
             <div className="flex flex-col justify-between">
               {mensagens.map((mensagem) => {
                 return (
-                  <div className="w-full flex flex-row justify-start items-center p-2">                    
+                  <div key={mensagem.id} className="w-full flex flex-row justify-start items-center p-2">                    
                       <img src={mensagem.img} alt="" />                    
                     <div className="flex flex-col ml-5 justify-start items-start">
                       <h2 className="text-[16px] text-[#4263EB]">

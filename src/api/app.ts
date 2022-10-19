@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const app = axios.create({
-  baseURL: 'https://mais-edu.herokuapp.com/'
+  baseURL: 'http://192.168.6.20:3010' //'https://mais-edu.herokuapp.com/'
 })
 
 export const createSession = async (mat: string, password: string) => {

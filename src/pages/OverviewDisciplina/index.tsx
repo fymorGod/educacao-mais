@@ -10,44 +10,52 @@ type Disciplina = {
   id: string;
   name: string;
 };
-
-export function CreateDisciplinas() {
+ 
+export function OverviewDisciplinas() {
+  const { idSerie, idDisciplina } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  console.log(user)
-  const { id } = useParams();
+  const user = useContext(AuthContext);
   const [disc, setDisc] = useState<Disciplina>();
   const [nameHook, setNameHook] = useState("Aulas");
   const [conteudoArray, setConteudoArray] = useState([]);
 
+    //   pegar o nome da disciplina
   useEffect(() => {
-    async function getConteudos() {
-     if ( user ) { const response = await app.get(
-        `/escolas/users/professores/${user}/conteudos`
-      );
-      setConteudoArray(response.data["conteudos"]);
-      console.log(response.data["conteudos"]);
-     }
+   if(idDisciplina){
+    try {
+      const getData = async () => {
+        const response = await app.get(`/disciplinas/${idDisciplina}`);
+          setDisc(response.data.disciplina.name)
+      };
+      getData();
+    } catch (error) {
+      console.log("Error: ", error)
     }
+   }
+  }, [idDisciplina]);
 
-    getConteudos();
-  }, []);
-
-  //   pegar o nome da disciplina
   useEffect(() => {
-    const getData = async () => {
-      const response = await app.get(`/disciplinas/${id}`);
-      setDisc(response.data.disciplina);
-    };
-    getData();
-  }, []);
+    try {
+    if ( user.user ) { 
+      async function getConteudos() {
+        const response = await app.get(
+          `/escolas/users/professores/${user.user}/conteudos`
+        );
+        setConteudoArray(response.data["conteudos"]);
+      } 
+      getConteudos();
+    }
+  } catch (error) {
+    console.log("Error: ", error)
+  }
+  }, [user.user]);
 
   function EditarConteudo() {
-    navigate(`/editar-disciplinas-${nameHook}/${disc.id}`);
+    navigate(`/editar-disciplinas-${nameHook}/${idDisciplina}`);
   }
 
   function CriarConteudo() {
-    navigate(`/criar-disciplinas-${nameHook}/${disc.id}`);
+    navigate(`/criar-disciplinas-${nameHook}/${idDisciplina}`);
   }
 
   function HandleVerificar(nameHook: string) {
@@ -58,22 +66,25 @@ export function CreateDisciplinas() {
             Nenhuma aula cadastrada
           </p>
         );
-      }
-      return conteudoArray.map((conteudo) => {
-        return (
-          <button
-            className=" mt-2 bg-[#4263EB] rounded-lg px-4"
-            onClick={EditarConteudo}
-          >
-            <div
+      } else {
+        return conteudoArray?.map((conteudo) => {
+          return (
+            <button
               key={conteudo.id}
-              className="w-[250px] h-[120px] flex justify-center items-center"
+              className=" mt-2 bg-[#4263EB] rounded-lg px-4"
+              onClick={EditarConteudo}
             >
-              <p className="text-white">{conteudo.name}</p>
-            </div>
-          </button>
-        );
-      });
+              <div
+                key={conteudo.id}
+                className="w-[250px] h-[120px] flex justify-center items-center"
+              >
+                <p className="text-white">{conteudo?.name}</p>
+              </div>
+            </button>
+          );
+        });
+      }
+     
     } else if (nameHook == "Atividades") {
       return (
         <p className="text-[#333] text-center font-rubik text-[14px] font-semibold">
@@ -98,7 +109,7 @@ export function CreateDisciplinas() {
           <div className="w-full">
             <div className="w-[60rem] h-screen flex flex-col bg-white rounded-lg shadow-md shaow-[#333] ml-12">
               <div className="flex flex-row relative">
-                <TabsDisciplinas setNameHook={setNameHook} />
+                <TabsDisciplinas setNameHook={setNameHook} nameDisciplina={disc} />
                 <button
                   className="absolute right-10 top-5 bg-[#4263EB] rounded-lg px-4"
                   onClick={() => EditarConteudo()}

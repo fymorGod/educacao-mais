@@ -3,7 +3,6 @@ import logo from "../../assets/logo.png";
 import control from "../../assets/control.png";
 import { HiMenu } from "react-icons/hi";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function Sidebar() {
   const [open, setOpen] = useState(true);

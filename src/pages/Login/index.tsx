@@ -1,7 +1,6 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import backgroundImgNew from "../../assets/FOTO.png";
 import { AuthContext } from "../../context/auth";
-import { useNavigate } from "react-router-dom";
 
 export function Login() {
     const { login } = useContext(AuthContext);
@@ -9,10 +8,10 @@ export function Login() {
     const [mat, setMat] = useState("");
     const [password, setPassword] = useState("");
   
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
       e.preventDefault();
   
-      login(mat, password); //interação com o contexto/api
+      login(mat, password); 
     };
   
     return (

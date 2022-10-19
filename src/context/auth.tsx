@@ -1,47 +1,41 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { app, createSession } from "../api/app";
+import { AuthContextType } from "../types/AuthContextType";
+import { User } from "../types/User";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext<AuthContextType>(null!);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}: {children: React.ReactNode}) => {
+
   const navigate = useNavigate();
-  const [user, setUser] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<string>();
+  //const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const recoveredUser = localStorage.getItem("user");
-
-    if (recoveredUser) {
-      setUser(recoveredUser);
+    const storageData  = localStorage.getItem("user");
+    
+    if ( storageData ) {
+      setUser(storageData);
     }
-    setLoading(false);
   }, []);
 
-  const login = async (mat, password) => {
-    console.log("login", { mat, password });
-
+  const login = async (mat: string, password: string) => {
     const response = await createSession(mat, password);
-
-    //api para criar uma session
     const loggedUser = response.data.user;
     const token = response.data.token;
 
     localStorage.setItem("user", loggedUser.id);
     localStorage.setItem("token", token);
-
     app.defaults.headers.Authorization = `Bearer ${token}`;
-
-    // console.log(varId);
 
     setUser(loggedUser.id);
     navigate("/home");
 
-    console.log(response.data.user);
+    //console.log(response.data);
   };
 
   const logout = () => {
-    console.log("logout");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     app.defaults.headers.Authorization = null;
@@ -52,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authenticated: !!user, user, login, loading, logout }}
+      value={{ user, login, logout }}
     >
       {children}
     </AuthContext.Provider>

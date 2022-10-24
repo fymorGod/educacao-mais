@@ -26,7 +26,7 @@ type GraficosProps = {
 
 export function Dados() {
   const { user } = useContext(AuthContext);
-  const [dados, setDados] = useState<GraficosProps | string>("");
+  const [dados, setDados] = useState<GraficosProps | Any>("");
   console.log(user)
   useEffect(() => {
     if(user) {
@@ -51,34 +51,34 @@ export function Dados() {
   const [idItemNota, setIdItemNota] = useState(-1);
   const [idItemMedia, setIdItemMedia] = useState(-1);
 
-  const handleCarregarDisc = function (e) {
+  const handleCarregarDisc = function (e: React.ChangeEvent<HTMLSelectElement>) {
     const opDisc = e.target.value;
 
-    setIdItemSerie(opDisc);
+    setIdItemSerie(parseInt(opDisc));
   };
 
-  const handleCarregarSerie = function (e) {
+  const handleCarregarSerie = function (e: React.ChangeEvent<HTMLSelectElement>) {
     const opSerie = e.target.value;
 
-    setIdItemTurma(opSerie);
+    setIdItemTurma(parseInt(opSerie));
   };
 
-  const handleCarregarTurma = function (e) {
+  const handleCarregarTurma = function (e: React.ChangeEvent<HTMLSelectElement>) {
     const opTurma = e.target.value;
 
-    setIdItemAluno(opTurma);
+    setIdItemAluno(parseInt(opTurma));
   };
 
-  const handleCarregarAluno = function (e) {
+  const handleCarregarAluno = function (e: React.ChangeEvent<HTMLSelectElement>) {
     const opAluno = e.target.value;
 
-    setIdItemNota(opAluno);
+    setIdItemNota(parseInt(opAluno));
   };
 
-  const handleCarregarNota = function (e) {
+  const handleCarregarNota = function (e: React.ChangeEvent<HTMLSelectElement>) {
     const opNota = e.target.value;
 
-    setIdItemMedia(opNota);
+    setIdItemMedia(parseInt(opNota));
   };
 
   const optionsArea = {
@@ -125,7 +125,8 @@ export function Dados() {
               <p className="text-[20px] font-semibold">Disciplina</p>
               <select
                 className="bg-[#FFFFFF] w-4/5 text-[16px]"
-                onClick={handleCarregarDisc}
+
+                onChange={handleCarregarDisc}
                 name="disciplina"
               >
                 <option value={-1}> Selecione uma disciplina:</option>
@@ -144,7 +145,7 @@ export function Dados() {
               <p className="text-[20px] font-semibold">Série</p>
               <select
                 className="bg-[#FFFFFF] w-4/5 text-[16px]"
-                onClick={handleCarregarSerie}
+                onChange={handleCarregarSerie}
                 name="serie"
               >
                 <option value={-1}> Selecione uma série:</option>
@@ -161,7 +162,7 @@ export function Dados() {
               <p className="text-[20px]">Turma</p>
               <select
                 className="bg-[#FFFFFF] w-4/5 text-[16px]"
-                onClick={handleCarregarTurma}
+                onChange={handleCarregarTurma}
                 name="turma"
               >
                 <option value={-1}> Selecione uma turma:</option>
@@ -180,7 +181,7 @@ export function Dados() {
               <p className="text-[20px]">Aluno</p>
               <select
                 className="bg-[#FFFFFF] w-4/5 text-[16px]"
-                onClick={handleCarregarAluno}
+                onChange={handleCarregarAluno}
                 name="aluno"
               >
                 <option value={-1}> Selecione um aluno:</option>

@@ -18,6 +18,8 @@ type Disciplina = {
 };
 
 export function CriarAula() {
+  const [arrayIds, setArrayIds] = useState<string[]>([])
+
   const { user } = useContext(AuthContext);
   const { id } = useParams();
   const [aula, setAula] = useState([]);
@@ -37,6 +39,19 @@ export function CriarAula() {
     console.log(getCondensaId);
     setBimestreId(getCondensaId);
   };
+
+  const addIdArray = (index:any) => {
+    setArrayIds([
+      ...arrayIds, index
+    ]);
+  }
+
+  const removeIdArray = (index:any) => {
+    setArrayIds([
+      ...arrayIds.slice(0, index),
+      ...arrayIds.slice(index + 1, arrayIds.length)
+    ]);
+  }
 
   useEffect(()=> {
     if(id) {
@@ -93,15 +108,16 @@ export function CriarAula() {
   }, []);
 
   
-  const lista = [];
-  console.log(lista)
-  function handleInput(id: number) {
-    lista.push(id);
-  }
+  // const lista = [];
+  // console.log(lista)
+  
+  // function handleInput2(id:any) {
+  //   lista.pop(id);
+  // }
 
-  function handleInput2(id: number) {
-    lista.pop(id);
-  }
+  // function handleInput(id: number) {
+  //   lista.push(id);
+  // }
 
   async function AddAula() {
     try {
@@ -109,7 +125,7 @@ export function CriarAula() {
         name: text,
         id_disciplina: id,
         created_by: user,
-        array_aulas: lista,
+        array_aulas: arrayIds,
         array_atividades: [],
         id_bimestre: "1cc1aee8-7cf6-48f1-9f9d-24434704ba9b",
         status: true      
@@ -136,15 +152,12 @@ export function CriarAula() {
       dragItem
     );
 
-    if (re.source.droppableId == 0 && re.destination.droppableId == 1) {
-      //console.log(dragItem.id)
-      //lista.push(dragItem.id);
-      handleInput(dragItem.id);
-  console.log(lista)
+    if (re.source.droppableId == 0 && re.destination.droppableId == 1) {    
+      addIdArray(dragItem.id);
     } else if (re.source.droppableId == 1 && re.destination.droppableId == 0) {
-      handleInput2(dragItem.id);
-    } else {
-    }
+      //handleInput2(dragItem.id);
+      removeIdArray(dragItem.id)
+    } return null
   };
 
   return (
@@ -172,7 +185,7 @@ export function CriarAula() {
                           }
                           ${
                             board.name == "aulas_conteudo"
-                              ? `h-[800px] mt-6 w-[60rem] h-screen flex flex-col bg-white rounded-lg shadow-md shaow-[#333] ml-12 scrollbar-thin scrollbar-thumb-[#EDF2FF]-700 scrollbar-track-[#EDF2FF]-300 overflow-y-scroll`
+                              ? `h-[800px] mt-6 w-[60rem] flex flex-col bg-white rounded-lg shadow-md shaow-[#333] ml-12 scrollbar-thin scrollbar-thumb-[#EDF2FF]-700 scrollbar-track-[#EDF2FF]-300 overflow-y-scroll`
                               : "0"
                           }`}
                             >
@@ -185,7 +198,7 @@ export function CriarAula() {
                                 {board.name === "aulas_conteudo" ? (
                                   <div className="w-full relative">
                                     <div>
-                                      <SuperTabs nameDisciplina={disc} idRefs={id} label={label.toString()}/>
+                                      <SuperTabs nameDisciplina={`${disc}`} idRefs={id} label={label.toString()}/>
                                       <div className="w-[180px] flex justify-between items-center flex-row absolute top-5 right-5">
                                         <button className="py-[2px] px-[15px] text-[14px] bg-[#FFFFFF] rounded-md">
                                           Cancelar

@@ -34,7 +34,7 @@ export function CriarAula() {
   const [disc, setDisc] = useState<Disciplina>();
   const [label, setLabel] = useState(0)
 
-  const handleBimestre = (event) => {
+  const handleBimestre = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const getCondensaId = event.target.value;
     console.log(getCondensaId);
     setBimestreId(getCondensaId);
@@ -46,11 +46,9 @@ export function CriarAula() {
     ]);
   }
 
-  const removeIdArray = (index:any) => {
-    setArrayIds([
-      ...arrayIds.slice(0, index),
-      ...arrayIds.slice(index + 1, arrayIds.length)
-    ]);
+  const removeIdArray = (idArr:any) => {
+    setArrayIds(arrayIds.filter(index => index !== idArr))
+    console.log(arrayIds)
   }
 
   useEffect(()=> {
@@ -89,6 +87,7 @@ export function CriarAula() {
         "/escolas/users/professores/aulas/series/f076177d-ea29-4695-87bb-14a0a8a29c7b/0edbbd06-e902-4714-a18e-ddd4dc82ddeb"
       );
       setAula(response.data);
+      console.log(response.data)
     };
     getData();
   }, []);
@@ -106,18 +105,6 @@ export function CriarAula() {
       setReady(true);
     }
   }, []);
-
-  
-  // const lista = [];
-  // console.log(lista)
-  
-  // function handleInput2(id:any) {
-  //   lista.pop(id);
-  // }
-
-  // function handleInput(id: number) {
-  //   lista.push(id);
-  // }
 
   async function AddAula() {
     try {
@@ -153,6 +140,7 @@ export function CriarAula() {
     );
 
     if (re.source.droppableId == 0 && re.destination.droppableId == 1) {    
+      //changeIdList(dragItem.id)
       addIdArray(dragItem.id);
     } else if (re.source.droppableId == 1 && re.destination.droppableId == 0) {
       //handleInput2(dragItem.id);
@@ -179,12 +167,12 @@ export function CriarAula() {
                               ref={provided.innerRef}
                               className={`
                           ${
-                            board.name == "aulas"
+                            board.name == "aulas" && bIndex == 0
                               ? "bg-dark-purple p-3 w-[300px] h-full select-none"
                               : "0"
                           }
                           ${
-                            board.name == "aulas_conteudo"
+                            board.name == "aulas_conteudo"  && bIndex == 1
                               ? `h-[800px] mt-6 w-[60rem] flex flex-col bg-white rounded-lg shadow-md shaow-[#333] ml-12 scrollbar-thin scrollbar-thumb-[#EDF2FF]-700 scrollbar-track-[#EDF2FF]-300 overflow-y-scroll`
                               : "0"
                           }`}
@@ -222,7 +210,7 @@ export function CriarAula() {
                                           }
                                         />
                                        <div className=" rounded-sm border-solid border-4 border-sky-300 w-[200px] mb-5 flex justify-center text-zinc-700">
-                                       <select name="" id="" className="text-[14px] w-[200px]"  onChange={(e) => handleBimestre(e)}>
+                                       <select name="" id="" className="text-[14px] w-[200px] outline-none"  onChange={(e) => handleBimestre(e)}>
                                           <option className="text-[12px]">Selecione o Bimestre</option>
                                           {
                                             bimestre.map((bim)=> {
@@ -242,20 +230,22 @@ export function CriarAula() {
                                             <img className="w-[25px] h-[25px]" src={EyesCloked} alt="" />
                                           </button>
                                         }
+                                                                    
                                       </div>
                                       {board.items.length == 0 && (
-                                        <div className="bg-[#EDF2FF] h-[150px] rounded-lg mb-4 p-1 pl-4 flex items-center justify-center">
+                                        <div className="bg-[#ffefed] h-[150px] rounded-lg mb-4 p-1 pl-4 flex items-center justify-center">
                                           <p className="text-center text-[#707070] text-[18px] font-roboto">
                                             Nenhuma aula cadastrada
                                           </p>
+                                          
                                         </div>
                                       )}
 
-                                      {board.name == "aulas_conteudo"
+                                      {board.name == "aulas_conteudo" && bIndex == 1
                                         ? board.items.length > 0 &&
                                           board.items.map((item:any, iIndex:any) => {
                                             return (
-                                              <div key={iIndex} className="bg-[#EDF2FF] rounded-lg p-4">
+                                              <div key={iIndex} className="bg-[#7ead8c] rounded-lg p-4">
                                                 <div className="flex flex-row items-center">
                                                   <div className="w-1/3 flex items-center">
                                                     <MenuIcon className="text-[#4263EB] active:text-[#263B4A] opacity-1 mb-8 mr-1" />

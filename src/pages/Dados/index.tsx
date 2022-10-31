@@ -6,7 +6,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import ReactApexChart  from "react-apexcharts";
+//import ReactApexChart  from "react-apexcharts";
 import { app } from "../../api/app";
 import { AuthContext } from "../../context/auth";
 
@@ -26,7 +26,7 @@ type GraficosProps = {
 
 export function Dados() {
   const { user } = useContext(AuthContext);
-  const [dados, setDados] = useState<GraficosProps | Any>("");
+  const [dados, setDados] = useState<GraficosProps>();
   console.log(user)
   useEffect(() => {
     if(user) {
@@ -131,7 +131,7 @@ export function Dados() {
               >
                 <option value={-1}> Selecione uma disciplina:</option>
 
-                {Object.entries(dados).map((item, i) => {
+                {Object.entries(dados).map((item:any, i) => {
                   return (
                     <option key={"disciplina" + i} value={i}>
                       {item[1].name.toString()}
@@ -150,7 +150,7 @@ export function Dados() {
               >
                 <option value={-1}> Selecione uma série:</option>
                 {idItemSerie > -1 &&
-                  dados[idItemSerie].series.map((item, i) => (
+                  dados[idItemSerie].series.map((item: any, i: number) => (
                     <option key={"serie" + i} value={i}>
                       {item.name}
                     </option>
@@ -168,7 +168,7 @@ export function Dados() {
                 <option value={-1}> Selecione uma turma:</option>
                 {idItemTurma > -1 &&
                   dados[idItemSerie].series[idItemTurma].turmas.map(
-                    (item, i) => (
+                    (item:any, i:number) => (
                       <option key={"turma" + i} value={i}>
                         {item.name}
                       </option>
@@ -188,7 +188,7 @@ export function Dados() {
                 {idItemAluno > -1 &&
                   dados[idItemSerie].series[idItemTurma].turmas[
                     idItemAluno
-                  ].alunos.map((item, i) => (
+                  ].alunos.map((item: any, i: number) => (
                     <option key={"turma" + i} value={i}>
                       {item.name}
                     </option>
@@ -308,14 +308,14 @@ export function Dados() {
                 </div>
               </div>
 
-              <ReactApexChart 
+              {/* <ReactApexChart 
                 className=""
                 options={optionsArea}
                 series={seriesArea}
                 type="area"
                 height={300}
                 width={700}
-              />
+              /> */}
             </div>
 
             <div className="flex flex-row mt-8 justify-between ">
@@ -343,14 +343,14 @@ export function Dados() {
                   </label>
                 </div>
               </div>
-              <ReactApexChart 
+              {/* <ReactApexChart 
                 className=""
                 options={optionsArea}
                 series={seriesArea}
                 type="area"
                 height={250}
                 width={700}
-              />
+              /> */}
             </div>
           </div>
 
@@ -441,7 +441,7 @@ export function Dados() {
                 </div> */}
               </div>
               <div className="flex flex-col items-center">
-                <ReactApexChart 
+                {/* <ReactApexChart 
                   className="flex items-center justify-center"
                   series={[15, 20, 45, 41, 12]}
                   options={{
@@ -465,7 +465,7 @@ export function Dados() {
                   type="donut"
                   height={280}
                   width={300}
-                />
+                /> */}
 
                 <div className="grid grid-cols-2 gap-12 text-dark-purple font-semibold text-[18px]">
                   <div className="flex flex-col justify-between items-center">

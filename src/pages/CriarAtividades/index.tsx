@@ -20,6 +20,7 @@ type Disciplina = {
 };
 
 export function CriarAtividades() {
+  const [arrayIds, setArrayIds] = useState<string[]>([])
   const { id } = useParams();
   const [aula, setAula] = useState([]);
   const [ready, setReady] = useState(true);
@@ -29,6 +30,19 @@ export function CriarAtividades() {
   const [nameHook, setNameHook] = useState("Atividades");
   const [disc, setDisc] = useState<Disciplina>();
   const [label, setLabel] = useState(1)
+
+  const addIdArray = (index:any) => {
+    setArrayIds([
+      ...arrayIds, index
+    ]);
+    console.log(arrayIds)
+  }
+
+  const removeIdArray = (idArr:any) => {
+    setArrayIds(arrayIds.filter(index => index !== idArr))
+    console.log(arrayIds)
+  }
+
 
   useEffect(() => {
     if(id){
@@ -111,13 +125,13 @@ export function CriarAtividades() {
         dragItem
         );
         
-        if (re.source.droppableId == 0 && re.destination.droppableId == 1) {
-          handleInput(dragItem.id);
-          console.log(lista)
-    } else if (re.source.droppableId == 1 && re.destination.droppableId == 0) {
-      handleInput2(dragItem.id);
-    } else {
-    }
+        if (re.source.droppableId == 0 && re.destination.droppableId == 1) {    
+          //changeIdList(dragItem.id)
+          addIdArray(dragItem.id);
+        } else if (re.source.droppableId == 1 && re.destination.droppableId == 0) {
+          //handleInput2(dragItem.id);
+          removeIdArray(dragItem.id)
+        } return null
 
   };
 
@@ -162,7 +176,7 @@ export function CriarAtividades() {
                                 {board.name === "atividades_conteudo" ? (
                                   <div className="w-full relative">
                                     <div>
-                                     <SuperTabs label={label} nameDisciplina={disc} idRefs={id} />
+                                     <SuperTabs label={`${label}`} nameDisciplina={`${disc}`} idRefs={id} />
                                       <div className="w-[180px] flex justify-between items-center flex-row absolute top-5 right-5">
                                         <button className="py-[2px] px-[15px] text-[14px] bg-[#FFFFFF] rounded-md">
                                           Cancelar

@@ -109,7 +109,7 @@ export function OverviewDisciplinas() {
           <div className="w-full">
             <div className="w-[60rem] h-screen flex flex-col bg-white rounded-lg shadow-md shaow-[#333] ml-12">
               <div className="flex flex-row relative">
-                <TabsDisciplinas setNameHook={setNameHook} nameDisciplina={disc} />
+                <TabsDisciplinas setNameHook={setNameHook} nameDisciplina={`${disc}`} />
                 <button
                   className="absolute right-10 top-5 bg-[#4263EB] rounded-lg px-4"
                   onClick={() => EditarConteudo()}
